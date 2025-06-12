@@ -46,60 +46,62 @@
 <body>
   <h2>Agricultural Buffer Strip Recommender</h2>
 
-<div style="overflow: auto; max-width: 800px;">
+  <div style="overflow: auto; max-width: 800px;">
 
-  <!-- Image and caption container -->
-  <div style="float: right; margin-left: 20px; margin-bottom: 10px; text-align: center;">
-    <img 
-      src="https://emasola.github.io/buffer-strip/Willow1.png" 
-      alt="Willow tree (Salix spp.)" 
-      width="400"
-      style="display: block; margin-bottom: 5px;">
+    <!-- Image and caption container -->
+    <div style="float: right; margin-left: 20px; margin-bottom: 10px; text-align: center;">
+      <img 
+        src="https://emasola.github.io/buffer-strip/Willow1.png" 
+        alt="Willow tree (Salix spp.)" 
+        width="400"
+        style="display: block; margin-bottom: 5px;">
+      
+      <p style="font-size: 0.8em; color: #666; margin: 0;">
+        <i>Salix spp.</i> — Source: 
+        <a href="https://gardenerspath.com/plants/landscape-trees/best-willow-varieties" target="_blank" rel="noopener noreferrer">
+          Gardeners Path
+        </a>
+      </p>
+    </div>
+
+    <label for="slope">Field Slope:</label>
+    <select id="slope">
+      <option>&lt; 10 %</option>
+      <option>&gt; 10 %</option>
+    </select>
+
+    <label for="fertilizer">Fertilizer Use:</label>
+    <select id="fertilizer">
+      <option>Low</option>
+      <option>Moderate</option>
+      <option>High</option>
+    </select>
+
+    <label for="soil">Soil Type:</label>
+    <select id="soil">
+      <option>Clay</option>
+      <option>Sandy</option>
+      <option>Loam</option>
+    </select>
+
+    <label for="rain">Precipitation Intensity:</label>
+    <select id="rain">
+      <option>Dry</option>
+      <option>Moderate</option>
+      <option>Heavy</option>
+    </select>
+
+    <label for="distance">Distance to Water Body:</label>
+    <select id="distance">
+      <option>&lt; 10 m</option>
+      <option>10 – 30 m</option>
+      <option>&gt; 30 m</option>
+    </select>
     
-    <p style="font-size: 0.8em; color: #666; margin: 0;">
-      <i>Salix spp.</i> — Source: 
-      <a href="https://gardenerspath.com/plants/landscape-trees/best-willow-varieties" target="_blank" rel="noopener noreferrer">
-        Gardeners Path
-      </a>
-    </p>
+    <button onclick="recommendBuffer()">Get Recommendation</button>
+
+    <div id="output"></div>
   </div>
-  <label for="slope">Field Slope:</label>
-  <select id="slope">
-    <option>&lt; 10 %</option>
-    <option>&gt; 10 %</option>
-  </select>
-
-  <label for="fertilizer">Fertilizer Use:</label>
-  <select id="fertilizer">
-    <option>Low</option>
-    <option>Moderate</option>
-    <option>High</option>
-  </select>
-
-  <label for="soil">Soil Type:</label>
-  <select id="soil">
-    <option>Clay</option>
-    <option>Sandy</option>
-    <option>Loam</option>
-  </select>
-
-  <label for="rain">Precipitation Intensity:</label>
-  <select id="rain">
-    <option>Dry</option>
-    <option>Moderate</option>
-    <option>Heavy</option>
-  </select>
-
-  <label for="distance">Distance to Water Body:</label>
-  <select id="distance">
-    <option>&lt; 10 m</option>
-    <option>10 – 30 m</option>
-    <option>&gt; 30 m</option>
-  </select>
-  
-  <button onclick="recommendBuffer()">Get Recommendation</button>
-
-  <div id="output"></div>
   
   <script>
     function recommendBuffer() {
@@ -132,7 +134,7 @@
 
       if (distance === "< 10 m") {
         if (slope === "> 10 %") {
-          vegetationOptions.push("Salix spp.");
+          vegetationOptions.push("Salix spp. (Willow)");
         } else {
           vegetationOptions.push("Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria");
         }
@@ -146,15 +148,27 @@
 
       const vegetation = vegetationOptions.join(", ");
 
-      document.getElementById("output").innerHTML =
-        <strong>Your Input:</strong><br> +
-        • Field Slope: ${slope}<br> +
-        • Fertilizer Use: ${fertilizer}<br> +
-        • Soil Type: ${soil}<br> +
-        • Precipitation Intensity: ${rain}<br> +
-        • Distance to Water Body: ${distance}<br><br> +
-        <strong>Minimum Buffer Width Requirement:</strong> ${width}<br> +
-        <strong>Suggested Vegetation:</strong> ${vegetation};
+      // Aggiungo la descrizione del Salix spp. solo se è presente nella vegetazione suggerita
+      let description = "";
+      if (vegetation.includes("Salix spp.")) {
+        description = `
+          <br><br>
+          <strong>SALIX SPECIES (WILLOW)</strong><br>
+          Salix spp. (Willow) are fast-growing shrub or tree species typically found in moist environments such as riparian zones, wetlands, and streambanks. Depending on the species, they can grow from 1.5–3 meters (shrubs) to over 15–20 meters tall (trees), with spreading root systems that can extend several meters both vertically and laterally. They are characterized by their high tolerance to waterlogging, ability to root easily from cuttings, and extensive fibrous roots that provide mechanical reinforcement to the soil. These traits make them particularly suitable for use in bioengineering, especially for soil stabilization, erosion control, and phytoremediation. In buffer strips near agricultural fields, willows effectively absorb excess nutrients (notably nitrogen and phosphorus), slow down surface runoff, promote infiltration and sedimentation, and provide ecological habitat for birds and insects. Their rapid growth, low maintenance requirements, and high biomass production make them an economically and ecologically sustainable solution for protecting water bodies and restoring degraded riparian landscapes.
+        `;
+      }
+
+      document.getElementById("output").innerHTML = `
+        <strong>Your Input:</strong><br>
+        • Field Slope: ${slope}<br>
+        • Fertilizer Use: ${fertilizer}<br>
+        • Soil Type: ${soil}<br>
+        • Precipitation Intensity: ${rain}<br>
+        • Distance to Water Body: ${distance}<br><br>
+        <strong>Minimum Buffer Width Requirement:</strong> ${width}<br>
+        <strong>Suggested Vegetation:</strong> ${vegetation}
+        ${description}
+      `;
     }
   </script>
 </body>
