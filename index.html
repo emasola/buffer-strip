@@ -1,3 +1,4 @@
+<!-- sostituisci il tuo codice HTML con questo -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +25,7 @@
       padding: 8px;
       width: 250px;
     }
+    
     .btn {
       margin-top: 15px;
       padding: 8px 16px;
@@ -60,35 +62,13 @@
       margin: 5px 0 10px 0;
       max-width: 600px;
     }
-
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 10px;
-      width: 80%;
-      max-width: 600px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover {
-      color: black;
+    #willow-description {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #d6ecda;
+      border-left: 5px solid #2a6d4f;
+      border-radius: 8px;
+      max-width: 700px;
     }
   </style>
 </head>
@@ -102,6 +82,7 @@
       alt="Willow tree (Salix spp.)" 
       width="400"
       style="display: block; margin-bottom: 5px;">
+    
     <p style="font-size: 0.8em; color: #666; margin: 0;">
       <i>Salix spp.</i> — Source: 
       <a href="https://gardenerspath.com/plants/landscape-trees/best-willow-varieties" target="_blank" rel="noopener noreferrer">
@@ -110,107 +91,77 @@
     </p>
   </div>
 
-  <!-- Form content here... (identico a prima, selettori etc.) -->
+  <!-- Select fields -->
+  <!-- (il codice dei menu a tendina rimane uguale) -->
 
-  <!-- selettori e bottoni -->
-  <!-- [omesso per brevità] — tieni i tuoi <select> esistenti qui -->
-
+  <!-- Pulsanti -->
   <button class="btn btn-primary" onclick="recommendBuffer()">Get Recommendation</button>
   <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
   
   <div id="output"></div>
-</div>
+  <div id="willow-description" style="display: none;"></div>
 
-<!-- Modal window -->
-<div id="vegModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h3>Suggested Vegetation Description</h3>
-    <div id="vegDescription"></div>
-  </div>
-</div>
-
-<script>
-  function resetForm() {
-    document.getElementById("slope").selectedIndex = 0;
-    document.getElementById("fertilizer").selectedIndex = 0;
-    document.getElementById("soil").selectedIndex = 0;
-    document.getElementById("rain").selectedIndex = 0;
-    document.getElementById("distance").selectedIndex = 0;
-    document.getElementById("output").innerHTML = "";
-  }
-
-  function recommendBuffer() {
-    const slope = document.getElementById("slope").value;
-    const slopeText = document.getElementById("slope").selectedOptions[0].text;
-    const fertilizer = document.getElementById("fertilizer").value;
-    const soil = document.getElementById("soil").value;
-    const rain = document.getElementById("rain").value;
-    const distance = document.getElementById("distance").value;
-    const distanceText = document.getElementById("distance").selectedOptions[0].text;
-
-    let width = "";
-    const vegetationOptions = [];
-
-    if (slope === "lt10") {
-      if (fertilizer === "Low") width = "3 meters";
-      else if (fertilizer === "Moderate") width = "5 meters";
-      else if (fertilizer === "High") width = "10 meters";
-    } else if (slope === "gt10") {
-      if (rain === "Dry") width = "5 meters";
-      else if (rain === "Moderate") width = "10 meters";
-      else if (rain === "Heavy") width = "12 meters";
+  <script>
+    function resetForm() {
+      document.getElementById("slope").selectedIndex = 0;
+      document.getElementById("fertilizer").selectedIndex = 0;
+      document.getElementById("soil").selectedIndex = 0;
+      document.getElementById("rain").selectedIndex = 0;
+      document.getElementById("distance").selectedIndex = 0;
+      document.getElementById("output").innerHTML = "";
+      document.getElementById("willow-description").style.display = "none";
     }
 
-    if (distance === "lt10") {
-      if (slope === "gt10") {
-        vegetationOptions.push("Salix spp.");
-      } else {
-        vegetationOptions.push("Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria");
+    function recommendBuffer() {
+      const slope = document.getElementById("slope").value;
+      const fertilizer = document.getElementById("fertilizer").value;
+      const soil = document.getElementById("soil").value;
+      const rain = document.getElementById("rain").value;
+      const distance = document.getElementById("distance").value;
+
+      let width = "";
+      const vegetationOptions = [];
+
+      if (slope === "lt10") {
+        if (fertilizer === "Low") width = "3 meters";
+        else if (fertilizer === "Moderate") width = "5 meters";
+        else if (fertilizer === "High") width = "10 meters";
+      } else if (slope === "gt10") {
+        if (rain === "Dry") width = "5 meters";
+        else if (rain === "Moderate") width = "10 meters";
+        else if (rain === "Heavy") width = "12 meters";
       }
-    } else if (distance === "10-30" && soil === "Loam") {
-      vegetationOptions.push("Sambucus nigra, Quercus robur, Festuca pratensis, Lotus corniculatus, Achillea millefolium, Plantago lanceolata");
-    } else if (distance === "gt30" && (slope === "gt10" || rain === "Dry")) {
-      vegetationOptions.push("Festuca ovina, Anthyllis vulneraria, Bromus erectus, Poa angustifolia");
-    } else {
-      vegetationOptions.push("Mixed native grasses and legumes");
+
+      if (distance === "lt10") {
+        if (slope === "gt10") {
+          vegetationOptions.push("Salix spp.");
+        } else {
+          vegetationOptions.push("Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria");
+        }
+      } else if (distance === "10-30" && soil === "Loam") {
+        vegetationOptions.push("Sambucus nigra, Quercus robur, Festuca pratensis, Lotus corniculatus, Achillea millefolium, Plantago lanceolata");
+      }
+
+      let outputText = `<strong>Recommended Buffer Width:</strong> ${width}<br><strong>Vegetation:</strong> ${vegetationOptions.join(", ")}`;
+      document.getElementById("output").innerHTML = outputText;
+
+      // Descrizione se Salix spp. è tra le specie raccomandate
+      if (vegetationOptions.includes("Salix spp.")) {
+        document.getElementById("willow-description").style.display = "block";
+        document.getElementById("willow-description").innerHTML = `
+        <strong>SALIX SPECIES (WILLOW)</strong><br>
+        Salix spp. (Willow) are fast-growing shrub or tree species typically found in moist environments such as riparian zones, wetlands, and streambanks. 
+        Depending on the species, they can grow from 1.5–3 meters (shrubs) to over 15–20 meters tall (trees), with spreading root systems that can extend several meters 
+        both vertically and laterally. They are characterized by their high tolerance to waterlogging, ability to root easily from cuttings, and extensive fibrous roots 
+        that provide mechanical reinforcement to the soil. These traits make them particularly suitable for use in bioengineering, especially for soil stabilization, 
+        erosion control, and phytoremediation. In buffer strips near agricultural fields, willows effectively absorb excess nutrients (notably nitrogen and phosphorus), 
+        slow down surface runoff, promote infiltration and sedimentation, and provide ecological habitat for birds and insects. Their rapid growth, low maintenance 
+        requirements, and high biomass production make them an economically and ecologically sustainable solution for protecting water bodies and restoring degraded 
+        riparian landscapes.`;
+      } else {
+        document.getElementById("willow-description").style.display = "none";
+      }
     }
-
-    const vegetation = vegetationOptions.join(", ");
-
-    document.getElementById("output").innerHTML =
-      `<strong>Your Input:</strong><br>` +
-      `• Field Slope: ${slopeText}<br>` +
-      `• Fertilizer Use: ${fertilizer}<br>` +
-      `• Soil Type: ${soil}<br>` +
-      `• Precipitation Intensity: ${rain}<br>` +
-      `• Distance to Water Body: ${distanceText}<br><br>` +
-      `<strong>Minimum Buffer Width Requirement:</strong> ${width}<br>` +
-      `<strong>Suggested Vegetation:</strong> ${vegetation}`;
-
-    // Show modal if a match is found
-    let vegDesc = "";
-    if (vegetation.includes("Salix spp.")) {
-      vegDesc = `<strong>Salix species (Willow trees):</strong> These fast-growing, deep-rooted trees are ideal for stabilizing streambanks and absorbing excess nutrients from runoff. Willows tolerate wet soils and can form dense buffer strips that filter sediments and reduce erosion effectively.`;
-    }
-
-    if (vegDesc !== "") {
-      document.getElementById("vegDescription").innerHTML = vegDesc;
-      document.getElementById("vegModal").style.display = "block";
-    }
-  }
-
-  function closeModal() {
-    document.getElementById("vegModal").style.display = "none";
-  }
-
-  // Optional: Close modal when clicking outside
-  window.onclick = function(event) {
-    const modal = document.getElementById("vegModal");
-    if (event.target === modal) {
-      modal.style.display = "none";
-    }
-  }
-</script>
+  </script>
 </body>
 </html>
