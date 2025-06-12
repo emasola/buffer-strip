@@ -11,19 +11,23 @@
       background: #f4f8f7;
       color: #333;
     }
+
     h2 {
       color: #2a6d4f;
     }
+
     label {
       display: block;
       margin-top: 10px;
       font-weight: bold;
     }
+
     select, button {
       margin-top: 5px;
       padding: 8px;
       width: 250px;
     }
+
     button {
       margin-top: 15px;
       background-color: #2a6d4f;
@@ -31,9 +35,11 @@
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #3c8b67;
     }
+
     #output {
       margin-top: 20px;
       background: #e0f3e5;
@@ -41,28 +47,63 @@
       border-radius: 8px;
       width: fit-content;
     }
+
+    .plant-card {
+      background-color: #f1f8f5;
+      border: 2px solid #c8e6c9;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      max-width: 800px;
+    }
+
+    .plant-card h3 {
+      color: #2e7d32;
+      margin-top: 0;
+    }
+
+    .plant-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .image-credit {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <h2>Agricultural Buffer Strip Recommender</h2>
 
-<div style="overflow: auto; max-width: 800px;">
-
-  <!-- Image and caption container -->
-  <div style="float: right; margin-left: 20px; margin-bottom: 10px; text-align: center;">
-    <img 
-      src="https://emasola.github.io/buffer-strip/Willow1.png" 
-      alt="Willow tree (Salix spp.)" 
-      width="400"
-      style="display: block; margin-bottom: 5px;">
-    
-    <p style="font-size: 0.8em; color: #666; margin: 0;">
+  <div class="plant-card">
+    <h3>Salix spp. (Willow)</h3>
+    <img src="https://emasola.github.io/buffer-strip/Willow1.png" alt="Willow tree (Salix spp.)" class="plant-image">
+    <p class="image-credit">
       <i>Salix spp.</i> — Source: 
       <a href="https://gardenerspath.com/plants/landscape-trees/best-willow-varieties" target="_blank" rel="noopener noreferrer">
         Gardeners Path
       </a>
     </p>
+    <p>
+      Salix spp. (Willow) are fast-growing shrub or tree species typically found in moist environments such as riparian zones, wetlands, and streambanks. Depending on the species, they can grow from 1.5–3 meters (shrubs) to over 15–20 meters tall (trees), with spreading root systems that can extend several meters both vertically and laterally.
+    </p>
+    <p>
+      They are characterized by their high tolerance to waterlogging, ability to root easily from cuttings, and extensive fibrous roots that provide mechanical reinforcement to the soil. These traits make them particularly suitable for use in bioengineering, especially for soil stabilization, erosion control, and phytoremediation.
+    </p>
+    <p>
+      In buffer strips near agricultural fields, willows effectively absorb excess nutrients (notably nitrogen and phosphorus), slow down surface runoff, promote infiltration and sedimentation, and provide ecological habitat for birds and insects.
+    </p>
+    <p>
+      Their rapid growth, low maintenance requirements, and high biomass production make them an economically and ecologically sustainable solution for protecting water bodies and restoring degraded riparian landscapes.
+    </p>
   </div>
+
   <label for="slope">Field Slope:</label>
   <select id="slope">
     <option>&lt; 10 %</option>
@@ -96,11 +137,11 @@
     <option>10 – 30 m</option>
     <option>&gt; 30 m</option>
   </select>
-  
+
   <button onclick="recommendBuffer()">Get Recommendation</button>
 
   <div id="output"></div>
-  
+
   <script>
     function recommendBuffer() {
       const slope = document.getElementById("slope").value;
