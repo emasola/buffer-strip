@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Agricultural Buffer Strip Recommender</title>
   <style>
     body {
@@ -34,75 +34,73 @@
     button:hover {
       background-color: #3c8b67;
     }
-    #output {
+    #outputRecommendation {
       margin-top: 20px;
       background: #e0f3e5;
       padding: 15px;
       border-radius: 8px;
       width: fit-content;
     }
+    #outputDescription {
+      margin-top: 20px;
+      background: #d5f0d8;
+      padding: 15px;
+      border-radius: 8px;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 0.95em;
+      color: #234d20;
+    }
+    #outputDescription img {
+      max-width: 120px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
   <h2>Agricultural Buffer Strip Recommender</h2>
 
-  <div style="overflow: auto; max-width: 800px;">
+  <label for="slope">Field Slope:</label>
+  <select id="slope">
+    <option>&lt; 10 %</option>
+    <option>&gt; 10 %</option>
+  </select>
 
-    <!-- Image and caption container -->
-    <div style="float: right; margin-left: 20px; margin-bottom: 10px; text-align: center;">
-      <img 
-        src="Willow1.png" 
-        alt="Willow tree (Salix spp.)" 
-        width="400"
-        style="display: block; margin-bottom: 5px;">
-      
-      <p style="font-size: 0.8em; color: #666; margin: 0;">
-        <i>Salix spp.</i> — Source: 
-        <a href="https://emasola.github.io/buffer-strip/" target="_blank" rel="noopener noreferrer">
-          emasola.github.io
-        </a>
-      </p>
-    </div>
+  <label for="fertilizer">Fertilizer Use:</label>
+  <select id="fertilizer">
+    <option>Low</option>
+    <option>Moderate</option>
+    <option>High</option>
+  </select>
 
-    <label for="slope">Field Slope:</label>
-    <select id="slope">
-      <option>&lt; 10 %</option>
-      <option>&gt; 10 %</option>
-    </select>
+  <label for="soil">Soil Type:</label>
+  <select id="soil">
+    <option>Clay</option>
+    <option>Sandy</option>
+    <option>Loam</option>
+  </select>
 
-    <label for="fertilizer">Fertilizer Use:</label>
-    <select id="fertilizer">
-      <option>Low</option>
-      <option>Moderate</option>
-      <option>High</option>
-    </select>
+  <label for="rain">Precipitation Intensity:</label>
+  <select id="rain">
+    <option>Dry</option>
+    <option>Moderate</option>
+    <option>Heavy</option>
+  </select>
 
-    <label for="soil">Soil Type:</label>
-    <select id="soil">
-      <option>Clay</option>
-      <option>Sandy</option>
-      <option>Loam</option>
-    </select>
+  <label for="distance">Distance to Water Body:</label>
+  <select id="distance">
+    <option>&lt; 10 m</option>
+    <option>10 – 30 m</option>
+    <option>&gt; 30 m</option>
+  </select>
+  
+  <button onclick="recommendBuffer()">Get Recommendation</button>
 
-    <label for="rain">Precipitation Intensity:</label>
-    <select id="rain">
-      <option>Dry</option>
-      <option>Moderate</option>
-      <option>Heavy</option>
-    </select>
-
-    <label for="distance">Distance to Water Body:</label>
-    <select id="distance">
-      <option>&lt; 10 m</option>
-      <option>10 – 30 m</option>
-      <option>&gt; 30 m</option>
-    </select>
-    
-    <button onclick="recommendBuffer()">Get Recommendation</button>
-
-    <div id="output"></div>
-    
-  </div>
+  <div id="outputRecommendation"></div>
+  <div id="outputDescription"></div>
 
   <script>
     function recommendBuffer() {
@@ -113,52 +111,38 @@
       const distance = document.getElementById("distance").value;
 
       let width = "";
-      const vegetationOptions = [];
-      let showWillowDesc = false;  // flag per descrizione Salix spp.
+      let vegetation = "";
+      let showDescription = false;
 
-      // Updated Buffer Width Logic
+      // Calculate Buffer Width
       if (slope === "< 10 %") {
-        if (fertilizer === "Low") {
-          width = "3 meters";
-        } else if (fertilizer === "Moderate") {
-          width = "5 meters";
-        } else if (fertilizer === "High") {
-          width = "10 meters";
-        }
+        if (fertilizer === "Low") width = "3 meters";
+        else if (fertilizer === "Moderate") width = "5 meters";
+        else if (fertilizer === "High") width = "10 meters";
       } else if (slope === "> 10 %") {
-        if (rain === "Dry") {
-          width = "5 meters";
-        } else if (rain === "Moderate") {
-          width = "10 meters";
-        } else if (rain === "Heavy") {
-          width = "12 meters";
-        }
+        if (rain === "Dry") width = "5 meters";
+        else if (rain === "Moderate") width = "10 meters";
+        else if (rain === "Heavy") width = "12 meters";
       }
 
-      // Vegetation recommendation logic
+      // Determine vegetation recommendation and if show description
       if (distance === "< 10 m") {
         if (slope === "> 10 %") {
-          vegetationOptions.push("Salix spp.");
-          showWillowDesc = true;  // attivo descrizione
+          vegetation = "Salix spp.";
+          showDescription = true;
         } else {
-          vegetationOptions.push("Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria");
+          vegetation = "Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria";
         }
       } else if (distance === "10 – 30 m" && soil === "Loam") {
-        vegetationOptions.push("Sambucus nigra, Quercus robur, Festuca pratensis, Lotus corniculatus, Achillea millefolium, Plantago lanceolata");
+        vegetation = "Sambucus nigra, Quercus robur, Festuca pratensis, Lotus corniculatus, Achillea millefolium, Plantago lanceolata";
       } else if (distance === "> 30 m" && (slope === "> 10 %" || rain === "Dry")) {
-        vegetationOptions.push("Festuca ovina, Anthyllis vulneraria, Bromus erectus, Poa angustifolia");
+        vegetation = "Festuca ovina, Anthyllis vulneraria, Bromus erectus, Poa angustifolia";
       } else {
-        vegetationOptions.push("Mixed native grasses and legumes");
+        vegetation = "Mixed native grasses and legumes";
       }
 
-      const vegetation = vegetationOptions.join(", ");
-
-      const willowDescription = `<br><br><strong>About Willow (Salix spp.):</strong> 
-        Willow trees (Salix spp.) are fast-growing deciduous shrubs or trees commonly found in moist soils and along water bodies. 
-        They play a crucial role in stabilizing stream banks, reducing erosion, and providing habitat for wildlife. 
-        Their extensive root systems improve soil structure and water filtration.`;
-
-      document.getElementById("output").innerHTML =
+      // Show Recommendation
+      document.getElementById("outputRecommendation").innerHTML =
         `<strong>Your Input:</strong><br>` +
         `• Field Slope: ${slope}<br>` +
         `• Fertilizer Use: ${fertilizer}<br>` +
@@ -166,8 +150,25 @@
         `• Precipitation Intensity: ${rain}<br>` +
         `• Distance to Water Body: ${distance}<br><br>` +
         `<strong>Minimum Buffer Width Requirement:</strong> ${width}<br>` +
-        `<strong>Suggested Vegetation:</strong> ${vegetation}` +
-        (showWillowDesc ? willowDescription : "");
+        `<strong>Suggested Vegetation:</strong> ${vegetation}`;
+
+      // Show Description and Photo if needed
+      const descDiv = document.getElementById("outputDescription");
+      if (showDescription) {
+        descDiv.innerHTML = `
+          <img src="Willow1.png" alt="Willow tree (Salix spp.)" />
+          <div>
+            <strong>About Willow (Salix spp.):</strong><br>
+            Willow trees (Salix spp.) are fast-growing deciduous shrubs or trees commonly found in moist soils and along water bodies.
+            They play a crucial role in stabilizing stream banks, reducing erosion, and providing habitat for wildlife.
+            Their extensive root systems improve soil structure and water filtration.
+            <br><br>
+            <small>Source: <a href="https://emasola.github.io/buffer-strip/" target="_blank" rel="noopener noreferrer">emasola.github.io</a></small>
+          </div>
+        `;
+      } else {
+        descDiv.innerHTML = "";  // clear description if not Salix spp.
+      }
     }
   </script>
 </body>
