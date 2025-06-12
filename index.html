@@ -151,6 +151,15 @@
 
       const vegetation = vegetationOptions.join(", ");
 
+      // Descrizione Willow da mostrare solo se presente "Salix spp."
+      const willowDescription = `<br><br><strong>About Willow (Salix spp.):</strong> 
+        Willow trees (Salix spp.) are fast-growing deciduous shrubs or trees commonly found in moist soils and along water bodies. 
+        They play a crucial role in stabilizing stream banks, reducing erosion, and providing habitat for wildlife. 
+        Their extensive root systems improve soil structure and water filtration.`;
+
+      // Controllo presenza Salix spp. nel testo vegetazione
+      const showWillowDesc = vegetation.includes("Salix spp.") ? willowDescription : "";
+
       document.getElementById("output").innerHTML =
         `<strong>Your Input:</strong><br>` +
         `• Field Slope: ${slope}<br>` +
@@ -159,7 +168,8 @@
         `• Precipitation Intensity: ${rain}<br>` +
         `• Distance to Water Body: ${distance}<br><br>` +
         `<strong>Minimum Buffer Width Requirement:</strong> ${width}<br>` +
-        `<strong>Suggested Vegetation:</strong> ${vegetation}`;
+        `<strong>Suggested Vegetation:</strong> ${vegetation}` +
+        showWillowDesc;
     }
   </script>
 </body>
