@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agricultural Buffer Strip Recommender</title>
   <style>
     body {
@@ -19,191 +19,198 @@
       margin-top: 10px;
       font-weight: bold;
     }
-    select, button {
+    select {
       margin-top: 5px;
       padding: 8px;
       width: 250px;
     }
-    button {
+    .btn {
       margin-top: 15px;
-      background-color: #2a6d4f;
-      color: white;
+      padding: 8px 16px;
+      width: 250px;
       border: none;
       cursor: pointer;
+      font-weight: bold;
+      border-radius: 4px;
     }
-    button:hover {
+    .btn-primary {
+      background-color: #2a6d4f;
+      color: white;
+    }
+    .btn-primary:hover {
       background-color: #3c8b67;
     }
-    #outputRecommendation {
+    .btn-secondary {
+      background-color: #ccc;
+      color: #333;
+    }
+    .btn-secondary:hover {
+      background-color: #bbb;
+    }
+    #output {
       margin-top: 20px;
       background: #e0f3e5;
       padding: 15px;
       border-radius: 8px;
       width: fit-content;
     }
-    #outputDescription {
-      margin-top: 20px;
-      background: #d5f0d8;
-      padding: 15px;
-      border-radius: 8px;
+    .input-info {
+      font-size: 0.9em;
+      color: #555;
+      margin: 5px 0 10px 0;
       max-width: 600px;
-      font-size: 0.95em;
-      color: #234d20;
     }
-    #outputDescription img {
-      max-width: 120px;
-      border-radius: 6px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      float: left;
-      margin-right: 15px;
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
     }
-    #outputDescription div {
-      overflow: hidden;
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: black;
     }
   </style>
 </head>
 <body>
   <h2>Agricultural Buffer Strip Recommender</h2>
 
-  <label for="slope">Field Slope:</label>
-  <select id="slope">
-    <option>&lt; 10 %</option>
-    <option>&gt; 10 %</option>
-  </select>
+<div style="overflow: auto; max-width: 800px;">
+  <div style="float: right; margin-left: 20px; margin-bottom: 10px; text-align: center;">
+    <img 
+      src="Willow1.png" 
+      alt="Willow tree (Salix spp.)" 
+      width="400"
+      style="display: block; margin-bottom: 5px;">
+    <p style="font-size: 0.8em; color: #666; margin: 0;">
+      <i>Salix spp.</i> — Source: 
+      <a href="https://gardenerspath.com/plants/landscape-trees/best-willow-varieties" target="_blank" rel="noopener noreferrer">
+        Gardeners Path
+      </a>
+    </p>
+  </div>
 
-  <label for="fertilizer">Fertilizer Use:</label>
-  <select id="fertilizer">
-    <option>Low</option>
-    <option>Moderate</option>
-    <option>High</option>
-  </select>
+  <!-- Form content here... (identico a prima, selettori etc.) -->
 
-  <label for="soil">Soil Type:</label>
-  <select id="soil">
-    <option>Clay</option>
-    <option>Sandy</option>
-    <option>Loam</option>
-  </select>
+  <!-- selettori e bottoni -->
+  <!-- [omesso per brevità] — tieni i tuoi <select> esistenti qui -->
 
-  <label for="rain">Precipitation Intensity:</label>
-  <select id="rain">
-    <option>Dry</option>
-    <option>Moderate</option>
-    <option>Heavy</option>
-  </select>
-
-  <label for="distance">Distance to Water Body:</label>
-  <select id="distance">
-    <option>&lt; 10 m</option>
-    <option>10 – 30 m</option>
-    <option>&gt; 30 m</option>
-  </select>
+  <button class="btn btn-primary" onclick="recommendBuffer()">Get Recommendation</button>
+  <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
   
-  <button onclick="recommendBuffer()">Get Recommendation</button>
+  <div id="output"></div>
+</div>
 
-  <div id="outputRecommendation"></div>
-  <div id="outputDescription"></div>
+<!-- Modal window -->
+<div id="vegModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>Suggested Vegetation Description</h3>
+    <div id="vegDescription"></div>
+  </div>
+</div>
 
-  <script>
-    const vegetationDescriptions = {
-      "Salix spp.": {
-        img: "Willow1.png",
-        title: "About Willow (Salix spp.):",
-        text: `Willow trees (Salix spp.) are fast-growing shrub or tree species typically found in moist environments such as riparian zones, wetlands, and streambanks. Depending on the species, they can grow from 1.5–3 meters (shrubs) to over 15–20 meters tall (trees), with spreading root systems that can extend several meters both vertically and laterally. They are characterized by their high tolerance to waterlogging, ability to root easily from cuttings, and extensive fibrous roots that provide mechanical reinforcement to the soil. These traits make them particularly suitable for use in bioengineering, especially for soil stabilization, erosion control, and phytoremediation. In buffer strips near agricultural fields, willows effectively absorb excess nutrients (notably nitrogen and phosphorus), slow down surface runoff, promote infiltration and sedimentation, and provide ecological habitat for birds and insects. Their rapid growth, low maintenance requirements, and high biomass production make them an economically and ecologically sustainable solution for protecting water bodies and restoring degraded riparian landscapes.`
-      },
-      "Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria": {
-        img: "BlackElder1.png",
-        title: "About Sambucus nigra and associated species:",
-        text: `
-        <strong>Sambucus nigra (Black Elder)</strong><br>
-        Sambucus nigra, commonly known as elderberry, is a fast-growing deciduous shrub or small tree typically found in hedgerows and areas with moist, nutrient-rich soils. It thrives in a wide range of conditions, from periodically flooded zones to drier fertile soils, particularly in sunny environments. The plant usually reaches up to 6 meters in height and width, although it can occasionally grow as tall as 10 meters. Its dense and fibrous root system makes it well-suited for bioengineering applications, especially in buffer strips, where it contributes to streambank stabilization and erosion control. Sambucus nigra is particularly suitable for buffer strips near agricultural fields because it helps filter surface runoff, trap sediments, and absorb excess nutrients such as nitrogen and phosphorus, thereby improving water quality. Additionally, it supports local biodiversity by providing nectar, berries, and shelter for a variety of birds and insects, enhancing the ecological function of agricultural and riparian landscapes.<br><br>
+<script>
+  function resetForm() {
+    document.getElementById("slope").selectedIndex = 0;
+    document.getElementById("fertilizer").selectedIndex = 0;
+    document.getElementById("soil").selectedIndex = 0;
+    document.getElementById("rain").selectedIndex = 0;
+    document.getElementById("distance").selectedIndex = 0;
+    document.getElementById("output").innerHTML = "";
+  }
 
-        <strong>Viburnum opulus (Guelder rose)</strong><br>
-        Viburnum opulus, commonly known as Guelder rose, is a deciduous shrub native to wetlands and river margins, characterized by moderate growth, good shade tolerance, and fibrous roots that improve soil cohesion. It typically reaches 2 to 4 meters in height and 2 to 3 meters in width, forming a dense, rounded crown. This shrub is widely used in ecological restoration and bioengineering to stabilize riparian edges because its root system reduces erosion and enhances soil structure, while its dense canopy filters sediments and excess nutrients from runoff, thereby improving water quality. Additionally, Viburnum opulus supports biodiversity by providing food and habitat for birds and small mammals, making it an excellent choice for buffer strips in riparian zones.<br><br>
+  function recommendBuffer() {
+    const slope = document.getElementById("slope").value;
+    const slopeText = document.getElementById("slope").selectedOptions[0].text;
+    const fertilizer = document.getElementById("fertilizer").value;
+    const soil = document.getElementById("soil").value;
+    const rain = document.getElementById("rain").value;
+    const distance = document.getElementById("distance").value;
+    const distanceText = document.getElementById("distance").selectedOptions[0].text;
 
-        <strong>Ulmus laevis (European White Elm)</strong><br>
-        Ulmus laevis, a native elm tree commonly found in floodplain forests, typically grows between 20 and 30 meters tall with a broad, spreading crown. It is tolerant of periodic waterlogging and develops a deep, extensive root system that is highly effective for stabilizing soil in wetland-adjacent areas. Despite its sensitivity to Dutch elm disease, Ulmus laevis plays a crucial role in the long-term stabilization of buffer zones by anchoring soils prone to erosion and by improving soil structure. Its large canopy also provides important habitat and shade, which helps maintain cooler microclimates and supports diverse wildlife in riparian buffers, making it an essential species for ecological restoration and maintaining the integrity of these sensitive environments.<br><br>
+    let width = "";
+    const vegetationOptions = [];
 
-        <strong>Alnus glutinosa (Black Alder)</strong><br>
-        Alnus glutinosa (Black Alder) is a fast-growing, nitrogen-fixing tree species commonly found along riverbanks and in wetlands. It typically reaches heights of 15 to 25 meters, with a broad, rounded crown. This species rapidly colonizes disturbed areas, improving soil fertility through nitrogen fixation and developing extensive root systems that strongly reinforce streambanks. In buffer zones, Alnus glutinosa is especially valuable for stabilizing flood-prone areas by reducing erosion and increasing soil cohesion. Moreover, it enhances nutrient cycling by enriching the soil, which benefits surrounding vegetation and contributes to overall ecosystem health and resilience in riparian zones.<br><br>
-
-        <strong>Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria</strong><br>
-        The following herbaceous species are all well-adapted to similar environmental conditions, including wet soils, gentle slopes, moderate to high precipitation, and proximity to water bodies. Their root structures, growth habits, and ecological functions make them particularly suitable for use in vegetated buffer strips, where they contribute to bank stabilization, erosion control, nutrient retention, and biodiversity enhancement in riparian and wetland environments.<br><br>
-
-        <strong>Carex riparia (Greater Pond Sedge)</strong><br>
-        Carex riparia is a robust, perennial sedge that thrives in saturated soils along riverbanks and wetland margins. It grows up to 1.2 meters in height, forming dense clumps and horizontal rhizome networks that provide excellent soil reinforcement and slope protection. Its dense vegetative cover traps sediments and filters nutrients from surface runoff, making it highly effective in buffer strips to reduce sediment transport and improve water quality.<br><br>
-
-        <strong>Juncus effusus (Soft Rush)</strong><br>
-        Juncus effusus is a tufted perennial rush growing up to 1 meter tall, common in wet meadows and riparian zones. Its fibrous root mats enhance soil cohesion and reduce erosion, while the dense aboveground stems slow surface runoff, promoting sediment deposition. This species also tolerates variable water regimes, making it a versatile component of vegetative buffers.<br><br>
-
-        <strong>Filipendula ulmaria (Meadowsweet)</strong><br>
-        Filipendula ulmaria is a fragrant perennial herb reaching 1–1.5 meters tall, usually found in damp meadows and along stream margins. It has a fibrous root system that stabilizes soils and a dense canopy that provides shade and habitat, aiding in erosion control and biodiversity support within buffer strips.<br><br>
-
-        <strong>Lythrum salicaria (Purple Loosestrife)</strong><br>
-        Lythrum salicaria is a tall, perennial wetland plant often found in marshes and floodplains. It can reach heights of 1 to 2 meters and produces dense stands that slow water flow and trap sediments. While it is effective for erosion control and nutrient filtration, it is considered invasive in some regions, so its use should be carefully managed.<br>`
-      },
-      "Festuca rubra, Festuca arundinacea, Poa pratensis, Lolium perenne, Phleum pratense, Dactylis glomerata": {
-        img: "Festuca_rubra.png",
-        title: "About Grass Species Used in Buffer Strips:",
-        text: `
-        <strong>Festuca rubra (Red Fescue)</strong><br>
-        Red fescue is a perennial grass known for its fine texture, shade tolerance, and ability to form dense sod. It typically grows 20–60 cm tall with fibrous roots that help stabilize soil and prevent erosion. It is highly drought-tolerant and adapts well to a range of soil types, making it a versatile grass for buffer strips that need to reduce surface runoff and trap sediments.<br><br>
-
-        <strong>Festuca arundinacea (Tall Fescue)</strong><br>
-        Tall fescue is a robust perennial bunchgrass that can grow up to 1.5 meters tall. It has a deep root system capable of accessing water deep in the soil, which enhances drought resistance and soil stabilization. Its dense growth and tolerance to variable moisture conditions make it ideal for filter strips and erosion control.<br><br>
-
-        <strong>Poa pratensis (Kentucky Bluegrass)</strong><br>
-        Kentucky bluegrass is a cool-season perennial grass valued for its dense, fine-textured sod and good tolerance to foot traffic. It forms a thick root network that holds soil firmly and reduces erosion. It prefers well-drained loam soils and moderate precipitation.<br><br>
-
-        <strong>Lolium perenne (Perennial Ryegrass)</strong><br>
-        Perennial ryegrass is a fast-establishing grass with a shallow but dense root system. It grows 30–80 cm tall and is commonly used for temporary erosion control and rapid ground cover. Though less drought-tolerant than fescues, it stabilizes soil effectively during wet conditions.<br><br>
-
-        <strong>Phleum pratense (Timothy Grass)</strong><br>
-        Timothy grass is a tall perennial grass (up to 1.5 m) commonly used in pastures and buffer strips. It has a fibrous root system effective for soil binding and is adapted to moist soils. It helps reduce surface runoff and improve infiltration.<br><br>
-
-        <strong>Dactylis glomerata (Orchard Grass)</strong><br>
-        Orchard grass is a bunchgrass growing 30–100 cm tall with an extensive fibrous root system. It tolerates shade and wet soils and is used for forage and erosion control. It establishes dense stands that protect soil from raindrop impact and slow runoff.<br>`
-      }
-    };
-
-    function recommendBuffer() {
-      const slope = document.getElementById('slope').value;
-      const fertilizer = document.getElementById('fertilizer').value;
-      const soil = document.getElementById('soil').value;
-      const rain = document.getElementById('rain').value;
-      const distance = document.getElementById('distance').value;
-
-      let recommendation = "";
-      let descriptionKey = "";
-
-      if (slope === "< 10 %" && fertilizer === "Low" && (soil === "Clay" || soil === "Loam") && rain === "Dry" && distance === "< 10 m") {
-        recommendation = "Salix spp. (Willow)";
-        descriptionKey = "Salix spp.";
-      } else if (slope === "< 10 %" && fertilizer === "Moderate" && soil === "Loam" && rain === "Moderate" && (distance === "10 – 30 m" || distance === "> 30 m")) {
-        recommendation = "Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria";
-        descriptionKey = "Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria";
-      } else if (slope === "> 10 %" && fertilizer === "High" && soil === "Sandy" && rain === "Heavy" && distance === "< 10 m") {
-        recommendation = "Festuca rubra, Festuca arundinacea, Poa pratensis, Lolium perenne, Phleum pratense, Dactylis glomerata";
-        descriptionKey = "Festuca rubra, Festuca arundinacea, Poa pratensis, Lolium perenne, Phleum pratense, Dactylis glomerata";
-      } else {
-        recommendation = "No specific recommendation available for the selected conditions. Please adjust your inputs.";
-        descriptionKey = "";
-      }
-
-      document.getElementById('outputRecommendation').textContent = "Recommended vegetation: " + recommendation;
-
-      if (descriptionKey && vegetationDescriptions[descriptionKey]) {
-        const desc = vegetationDescriptions[descriptionKey];
-        document.getElementById('outputDescription').innerHTML =
-          `<img src="${desc.img}" alt="${recommendation} image" />
-          <div>
-            <h3>${desc.title}</h3>
-            <p>${desc.text}</p>
-          </div>`;
-      } else {
-        document.getElementById('outputDescription').innerHTML = "";
-      }
+    if (slope === "lt10") {
+      if (fertilizer === "Low") width = "3 meters";
+      else if (fertilizer === "Moderate") width = "5 meters";
+      else if (fertilizer === "High") width = "10 meters";
+    } else if (slope === "gt10") {
+      if (rain === "Dry") width = "5 meters";
+      else if (rain === "Moderate") width = "10 meters";
+      else if (rain === "Heavy") width = "12 meters";
     }
-  </script>
+
+    if (distance === "lt10") {
+      if (slope === "gt10") {
+        vegetationOptions.push("Salix spp.");
+      } else {
+        vegetationOptions.push("Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria");
+      }
+    } else if (distance === "10-30" && soil === "Loam") {
+      vegetationOptions.push("Sambucus nigra, Quercus robur, Festuca pratensis, Lotus corniculatus, Achillea millefolium, Plantago lanceolata");
+    } else if (distance === "gt30" && (slope === "gt10" || rain === "Dry")) {
+      vegetationOptions.push("Festuca ovina, Anthyllis vulneraria, Bromus erectus, Poa angustifolia");
+    } else {
+      vegetationOptions.push("Mixed native grasses and legumes");
+    }
+
+    const vegetation = vegetationOptions.join(", ");
+
+    document.getElementById("output").innerHTML =
+      `<strong>Your Input:</strong><br>` +
+      `• Field Slope: ${slopeText}<br>` +
+      `• Fertilizer Use: ${fertilizer}<br>` +
+      `• Soil Type: ${soil}<br>` +
+      `• Precipitation Intensity: ${rain}<br>` +
+      `• Distance to Water Body: ${distanceText}<br><br>` +
+      `<strong>Minimum Buffer Width Requirement:</strong> ${width}<br>` +
+      `<strong>Suggested Vegetation:</strong> ${vegetation}`;
+
+    // Show modal if a match is found
+    let vegDesc = "";
+    if (vegetation.includes("Salix spp.")) {
+      vegDesc = `<strong>Salix species (Willow trees):</strong> These fast-growing, deep-rooted trees are ideal for stabilizing streambanks and absorbing excess nutrients from runoff. Willows tolerate wet soils and can form dense buffer strips that filter sediments and reduce erosion effectively.`;
+    }
+
+    if (vegDesc !== "") {
+      document.getElementById("vegDescription").innerHTML = vegDesc;
+      document.getElementById("vegModal").style.display = "block";
+    }
+  }
+
+  function closeModal() {
+    document.getElementById("vegModal").style.display = "none";
+  }
+
+  // Optional: Close modal when clicking outside
+  window.onclick = function(event) {
+    const modal = document.getElementById("vegModal");
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  }
+</script>
 </body>
 </html>
