@@ -277,52 +277,11 @@ Bromus erectus is a robust perennial bunchgrass growing up to 0.6 to 1 meter in 
 <br>POA ANGUSTIFOLIA (Narrow-leaved Meadow-grass):<br>
 Poa angustifolia is a tuft-forming perennial grass with narrow leaves and fine, fibrous roots. It typically reaches 30 to 60 cm in height, and is well adapted to dry, low-fertility soils. Its compact growth and drought tolerance make it suitable for stabilizing slopes and field margins in dry parts of buffer zones. It is often used in low-maintenance grassland mixes for erosion control and landscape restoration.`};
 
-const plantImages = {
-    "Salix spp.": ["Willow1.png", "Willow2.png"],
-    "Sambucus nigra, Viburnum opulus, Ulmus laevis, Alnus glutinosa, Carex riparia, Juncus effusus, Filipendula ulmaria, Lythrum salicaria": [
-      "BlackElder1.png", "BlackElder2.jpg", "GuelderRose1.jpg", "GuelderRose2.jpg",
-      "WhiteElm1.jpg", "WhiteElm2.jpg", "BlackAlder1.png", "BlackAlder2.png",
-      "PondSedge1.jpg", "PondSedge2.jpg", "SoftRush.jpg", "Meadowsweet.jpg", "PurpleLoosestrife.jpg"
-    ],
-    "Sambucus nigra, Quercus robur, Festuca pratensis, Lotus corniculatus, Achillea millefolium, Plantago lanceolata": [
-      "BlackElder1.png", "BlackElder2.jpg", "EnglishOak1.jpg", "EnglishOak2.jpg",
-      "MeadowFescue1.jpg", "MeadowFescue2.jpg", "LotusCorniculatus.png",
-      "Yarrow1.png", "Yarrow2.png", "PlantagoLanceolata1.jpg", "PlantagoLanceolata2.jpg"
-    ],
-    "Festuca ovina, Anthyllis vulneraria, Bromus erectus, Poa angustifolia": [
-      "FestucaOvina.jpg", "Kidneyvetch.jpg", "BromusErectus1.jpg", "BromusErectus2.png",
-      "PoaAngustifolia1.jpg", "PoaAngustifolia2.jpg"
-    ]
-  };
-
-  function generateImageHTML(vegetationGroup) {
-    const images = plantImages[vegetationGroup];
-    if (!images) return "";
-
-    let imageHTML = `<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px;">`;
-
-    images.forEach(img => {
-      const baseName = img.split('.')[0];
-      const label = baseName.replace(/[0-9]/g, ''); // rimuove numeri
-      imageHTML += `
-        <div style="text-align: center; width: 150px;">
-          <img src="images/${img}" alt="${label}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);" />
-          <div style="margin-top: 5px; font-size: 0.9em;">${label}</div>
-        </div>
-      `;
-    });
-
-    imageHTML += `</div>`;
-    return imageHTML;
-  }
-
   // Output
   let descriptionText = "";
   if (vegetationDescriptions[vegetation]) {
     descriptionText = `<br><strong>Vegetation Details:</strong> ${vegetationDescriptions[vegetation]}`;
   }
-
-  const imageGallery = generateImageHTML(vegetation);
 
   document.getElementById("output").innerHTML =
     `<strong>Your Input:</strong><br>` +
@@ -333,8 +292,7 @@ const plantImages = {
     `• Distance to Water Body: ${distanceText}<br><br>` +
     `<strong>Minimum Buffer Width Requirement:</strong> ${width}<br>` +
     `<strong>Suggested Vegetation:</strong> ${vegetation}` +
-    descriptionText +
-    imageGallery;
+    descriptionText;
 </script>
 </body>
 </html>
